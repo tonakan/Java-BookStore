@@ -19,27 +19,27 @@ import javax.inject.Inject;
  */
 
 public class ControllerServlet extends HttpServlet {
-		private static final long serialVersionUID = 1L;
-		private DBConnection dbConnection;
+	private static final long serialVersionUID = 1L;
+	private DBConnection dbConnection;
 
-		@Inject
-    private BookDAO bookDAO;
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
+	@Inject
+	private BookDAO bookDAO;
+	/**
+	 * @see HttpServlet#HttpServlet()
+	 */
 
-    public void init() {
-			dbConnection = new DBConnection();
-			bookDAO = new BookDAO(dbConnection.getConnection());
-    }
+	public void init() {
+		dbConnection = new DBConnection();
+		bookDAO = new BookDAO(dbConnection.getConnection());
+	}
 
-		public void destroy() {
-			dbConnection.disconnect();
-		}
+	public void destroy() {
+		dbConnection.disconnect();
+	}
 
-    public ControllerServlet() {
-        super();
-    }
+	public ControllerServlet() {
+		super();
+	}
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
@@ -51,22 +51,33 @@ public class ControllerServlet extends HttpServlet {
 		try {
 			switch(action) {
 				case "/admin":
-					 showBookAdmin(request, response);
-           break;
-			  case "/new":
+					showBookAdmin(request, response);
+					break;
+				case "/new":
 					showNewForm(request, response);
-          break;
+					break;
 				case "/insert":
 					insertBook(request, response);
-          break;
-        default:
-				   listBooks(request, response);
-           break;
+					break;
+				case "/delete":
+					deleteBook(request, response);
+					break;
+				default:
+					listBooks(request, response);
+					break;
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	private void deleteBook(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+	    int id = Integer.parseInt(request.getParameter("id"));
+	    bookDAO.deleteBook(id);
+
+        response.sendRedirect("list");
 	}
 
 	private void showBookAdmin(HttpServletRequest request, HttpServletResponse response)
