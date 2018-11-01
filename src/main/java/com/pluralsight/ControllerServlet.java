@@ -64,6 +64,10 @@ public class ControllerServlet extends HttpServlet {
 					break;
                 case "/edit":
                     showEditForm(request, response);
+                    break;
+                case "/update":
+                    updateBook(request, response);
+                    break;
 				default:
 					listBooks(request, response);
 					break;
@@ -90,6 +94,16 @@ public class ControllerServlet extends HttpServlet {
 
         response.sendRedirect("list");
 	}
+
+	private void updateBook(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	    int id = Integer.parseInt(request.getParameter("id"));
+	    String author = request.getParameter("bookauthor");
+	    String title = request.getParameter("booktitle");
+	    float price = Float.parseFloat(request.getParameter("bookprice"));
+
+	    bookDAO.updateBook(new Book(id, title, author, price));
+	    response.sendRedirect("list");
+    }
 
 	private void showBookAdmin(HttpServletRequest request, HttpServletResponse response)
 			throws ClassNotFoundException, SQLException, ServletException, IOException {
